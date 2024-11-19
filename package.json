@@ -1,0 +1,22 @@
+{
+  "name": "ivdb_rest",
+  "version": "0.0.1",
+  "description": "API REST server for IVDb project",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest --collect-coverage"
+  },
+  "author": "Albhieri Cristoff Villa Contreras",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mysql2": "^3.11.4",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}
