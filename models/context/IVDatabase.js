@@ -10,6 +10,7 @@ const database = new Sequelize(
     port: process.env.DB_PORT,
     define: {
       timestamps: false,
+      freezeTableName: true,
     },
     dialect: "mysql",
   }

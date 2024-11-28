@@ -13,14 +13,6 @@ module.exports = {
     const Rating = require("../models/Rating");
     const Videogame = require("../models/Videogame");
 
-    await queryInterface.sequelize.query(
-      `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`
-    );
-
-    await queryInterface.sequelize.query(
-      `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME_TEST}\`;`
-    );
-
     await database.sync();
   },
 
