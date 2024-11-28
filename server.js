@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const userRoutes = require("../routes/User");
-const videogameRoutes = require("../routes/Videogame");
+const database = require("./models/context/IVDatabase");
+const userRoutes = require("./routes/User");
+const videogameRoutes = require("./routes/Videogame");
 require("dotenv").config();
 
 class Server {
@@ -30,7 +31,7 @@ class Server {
   }
 }
 
-sequelize
+database
   .sync()
   .then(() => {
     console.log("Conexión a la base de datos establecida");

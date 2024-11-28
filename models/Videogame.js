@@ -23,13 +23,13 @@ const Videogame = database.define("videogame", {
   },
 });
 
-Videogame.belongsToMany(Platform, { through: "VideogamePlatforms" });
-Platform.belongsToMany(Videogame, { through: "VideogamePlatforms" });
+Videogame.belongsToMany(Platform, { through: "videogamePlatforms" });
+Platform.belongsToMany(Videogame, { through: "videogamePlatforms" });
 
-Videogame.belongsToMany(Genre, { through: "VideogameGenres" });
-Genre.belongsToMany(Videogame, { through: "VideogameGenres" });
+Videogame.belongsToMany(Genre, { through: "videogameGenres" });
+Genre.belongsToMany(Videogame, { through: "videogameGenres" });
 
-Videogame.belongsToMany(Developer, { through: "VideogameDevelopers" });
-Developer.belongsToMany(Videogame, { through: "VideogameDevelopers" });
+Videogame.belongsToMany(Developer, { through: "videogameDevelopers" });
+Developer.belongsToMany(Videogame, { through: "videogameDevelopers" });
 
 module.exports = Videogame;

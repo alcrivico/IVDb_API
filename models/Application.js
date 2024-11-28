@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const database = require("./IVDatabase");
+const database = require("./context/IVDatabase");
 
 const Application = database.define("application", {
   request: {

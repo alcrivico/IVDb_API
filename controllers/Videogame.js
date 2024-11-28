@@ -162,3 +162,10 @@ const DELETEVideogame = async (req, res = response) => {
     res.status(500).json({ message: "No se pudo eliminar el videojuego" });
   }
 };
+
+module.exports = {
+  GETVideogame,
+  POSTVideogame,
+  PUTVideogame,
+  DELETEVideogame,
+};

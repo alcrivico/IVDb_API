@@ -124,3 +124,12 @@ const GETApplication = async (req, res = response) => {
     res.status(500).json({ message: "No se pudo obtener la solicitud" });
   }
 };
+
+module.exports = {
+  GETUser,
+  POSTUser,
+  POSTLogin,
+  POSTApplication,
+  GETApplications,
+  GETApplication,
+};
