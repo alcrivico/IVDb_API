@@ -19,10 +19,12 @@ const User = database.define("user", {
   },
 });
 
-User.belongsTo(Role, { foreignKey: "roleId", allowNull: false });
-Role.hasMany(User, { foreignKey: "roleId", allowNull: false });
+User.belongsTo(Role, { foreignKey: { name: "roleId", allowNull: false } });
+Role.hasMany(User, { foreignKey: { name: "roleId", allowNull: false } });
 
-User.hasOne(Application, { foreignKey: "userId", allowNull: false });
-Application.belongsTo(User, { foreignKey: "userId", allowNull: false });
+User.hasOne(Application, { foreignKey: { name: "userId", allowNull: false } });
+Application.belongsTo(User, {
+  foreignKey: { name: "userId", allowNull: false },
+});
 
 module.exports = User;
