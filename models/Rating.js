@@ -15,10 +15,10 @@ const Rating = database.define("rating", {
   },
 });
 
-Rating.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Rating, { foreignKey: "userId" });
+Rating.belongsTo(User, { foreignKey: "userId", allowNull: false });
+User.hasMany(Rating, { foreignKey: "userId", allowNull: false });
 
-Rating.belongsTo(Videogame, { foreignKey: "videogameId" });
-Videogame.hasMany(Rating, { foreignKey: "videogameId" });
+Rating.belongsTo(Videogame, { foreignKey: "videogameId", allowNull: false });
+Videogame.hasMany(Rating, { foreignKey: "videogameId", allowNull: false });
 
 module.exports = Rating;

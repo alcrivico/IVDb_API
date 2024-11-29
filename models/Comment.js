@@ -21,7 +21,7 @@ const Comment = database.define("comment", {
   },
 });
 
-Comment.belongsTo(Rating, { foreignKey: "ratingId" });
-Rating.hasMany(Comment, { foreignKey: "ratingId" });
+Comment.belongsTo(Rating, { foreignKey: "ratingId", allowNull: false });
+Rating.hasMany(Comment, { foreignKey: "ratingId", allowNull: false });
 
 module.exports = Comment;
