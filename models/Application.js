@@ -10,6 +10,11 @@ const Application = database.define("application", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  state: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 });
 
 module.exports = Application;
