@@ -14,3 +14,5 @@ videogameRoutes.get("/:id", validateKey, GETVideogame);
 videogameRoutes.post("/", validateKey, POSTVideogame);
 videogameRoutes.put("/:id", validateKey, PUTVideogame);
 videogameRoutes.delete("/:id", validateKey, DELETEVideogame);
+
+module.exports = videogameRoutes;
