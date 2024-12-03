@@ -131,4 +131,5 @@ dist
 
 #Dockerfile
 Dockerfile
+.dockerignore
 
