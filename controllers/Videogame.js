@@ -3,6 +3,7 @@ const Developer = require("../models/Developer");
 const Genre = require("../models/Genre");
 const Platform = require("../models/Platform");
 const { response } = require("express");
+const { where, Op } = require("sequelize");
 
 const GETVideogame = async (req, res = response) => {
   const { title, realeseDate } = req.body;
@@ -19,6 +20,229 @@ const GETVideogame = async (req, res = response) => {
     res.status(200).json(videogame);
   } catch (error) {
     res.status(500).json({ message: "No se pudo obtener el videojuego" });
+  }
+};
+
+const GETVideogames = async (req, res = response) => {
+  const { filter, limit, page } = req.query;
+  const limitNumber = parseInt(limit) || 8;
+  const pageNumber = parseInt(page) || 1;
+  const offsetNumber = (pageNumber - 1) * limitNumber;
+
+  let order;
+
+  switch (filter) {
+    case "A-Z":
+      order = [["title", "ASC"]];
+      break;
+    case "Z-A":
+      order = [["title", "DESC"]];
+      break;
+    case "Mas Recientes":
+      order = [["releaseDate", "DESC"]];
+      break;
+    case "Mas Antiguos":
+      order = [["releaseDate", "ASC"]];
+      break;
+    default:
+      order = [["title", "ASC"]];
+  }
+
+  try {
+    const videogames = await Videogame.findAll({
+      limit: limitNumber,
+      offset: offsetNumber,
+      order: order,
+    });
+
+    res.status(200).json(videogames);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo obtener los videojuegos" });
+  }
+};
+
+const GETUserComment = async (req, res = response) => {
+  const { title, realeseDate, email } = req.body;
+
+  try {
+    const videogame = await Videogame.findOne({
+      where: { title, realeseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const comment = await Comment.findOne({
+      include: [
+        {
+          model: Rating,
+          where: {
+            [Op.and]: [{ videogameId: videogame.id }, { userId: user.id }],
+          },
+          include: [
+            {
+              model: User,
+              where: { email },
+            },
+          ],
+          include: [
+            {
+              model: Videogame,
+              where: { title, realeseDate },
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo obtener el comentario" });
+  }
+};
+
+const GETCUserComments = async (req, res = response) => {
+  const { title, realeseDate } = req.body;
+
+  try {
+    const videogame = await Videogame.findOne({
+      where: { title, realeseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const comments = await Comment.findAll({
+      where: { hidden: false },
+      include: [
+        {
+          model: Rating,
+          where: { videogameId: videogame.id },
+          include: [
+            {
+              model: User,
+              where: { roleId: 3 },
+              include: [
+                {
+                  model: Role,
+                  where: { id: 3 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudieron obtener los comentarios" });
+  }
+};
+
+const GETPUserComments = async (req, res = response) => {
+  const { title, realeseDate } = req.body;
+
+  try {
+    const videogame = await Videogame.findOne({
+      where: { title, realeseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const comments = await Comment.findAll({
+      where: { hidden: false },
+      include: [
+        {
+          model: Rating,
+          where: { videogameId: videogame.id },
+          include: [
+            {
+              model: User,
+              where: { roleId: 2 },
+              include: [
+                {
+                  model: Role,
+                  where: { id: 2 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudieron obtener los comentarios" });
+  }
+};
+
+const PATCHHideComment = async (req, res = response) => {
+  const { value, title, realeseDate, email } = req.body;
+
+  try {
+    const videogame = await Videogame.findOne({
+      where: { title, realeseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const comment = await Comment.findOne({
+      include: [
+        {
+          model: Rating,
+          where: {
+            [Op.and]: [{ videogameId: videogame.id }, { userId: user.id }],
+          },
+          include: [
+            {
+              model: User,
+              where: { email },
+            },
+          ],
+          include: [
+            {
+              model: Videogame,
+              where: { title, realeseDate },
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    comment.hidden = value;
+    await comment.save();
+
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo ocultar el comentario" });
   }
 };
 
@@ -165,6 +389,11 @@ const DELETEVideogame = async (req, res = response) => {
 
 module.exports = {
   GETVideogame,
+  GETVideogames,
+  GETUserComment,
+  GETCUserComments,
+  GETPUserComments,
+  PATCHHideComment,
   POSTVideogame,
   PUTVideogame,
   DELETEVideogame,

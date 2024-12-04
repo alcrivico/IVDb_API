@@ -23,7 +23,7 @@ const POSTUser = async (req, res = response) => {
       username,
       email,
       password,
-      roleId: 1,
+      roleId: 2,
     });
     res.status(201).json(newUser);
   } catch (error) {
@@ -122,6 +122,62 @@ const GETApplication = async (req, res = response) => {
     res.status(200).json(application);
   } catch (error) {
     res.status(500).json({ message: "No se pudo obtener la solicitud" });
+  }
+};
+
+const PATCHApplication = async (req, res = response) => {
+  const { email, request } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const application = await Application.findOne({
+      where: { userId: user.id },
+    });
+
+    if (!application) {
+      return res.status(404).json({ message: "Solicitud no encontrada" });
+    }
+
+    application.request = request;
+    application.requestDate = new Date();
+    await application.save();
+
+    res.status(200).json(application);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo actualizar la solicitud" });
+  }
+};
+
+PATCHEvaluateApplication = async (req, res = response) => {
+  const { email, status } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const application = await Application.findOne({
+      where: { userId: user.id },
+    });
+
+    if (!application) {
+      return res.status(404).json({ message: "Solicitud no encontrada" });
+    }
+
+    application.status = status;
+
+    await application.save();
+
+    res.status(200).json(application);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo evaluar la solicitud" });
   }
 };
 

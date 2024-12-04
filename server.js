@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-const database = require("./models/context/IVDatabase");
+require("dotenv").config();
+const database =
+  process.env.NODE_ENV === "test"
+    ? require("./__tests__/context/IVDatabase_test")
+    : require("./models/context/IVDatabase");
 const userRoutes = require("./routes/User");
 const videogameRoutes = require("./routes/Videogame");
-require("dotenv").config();
 
 class Server {
   constructor() {
@@ -31,13 +34,16 @@ class Server {
   }
 }
 
+const server = new Server();
+
 database
   .sync()
   .then(() => {
     console.log("Conexión a la base de datos establecida");
-    const server = new Server();
     server.listen();
   })
   .catch((error) => {
     console.log("Error al conectar a la base de datos: ", error);
   });
+
+module.exports = server.app;
