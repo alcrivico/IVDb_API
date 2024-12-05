@@ -7,7 +7,7 @@ const database_test = new Sequelize(
   process.env.DB_USER_TEST,
   process.env.DB_PASS,
   {
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST_TEST,
     port: process.env.DB_PORT,
     define: {
       timestamps: false,
