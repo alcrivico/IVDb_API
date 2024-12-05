@@ -133,3 +133,7 @@ dist
 Dockerfile
 .dockerignore
 
+#Migrations
+migrations/
+config/
+
