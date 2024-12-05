@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+
 require("dotenv").config();
 
 const database = new Sequelize(
@@ -16,4 +17,4 @@ const database = new Sequelize(
   }
 );
 
-module.exports = database;
+module.exports = database_test;

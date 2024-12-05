@@ -3,16 +3,26 @@ const { validateKey } = require("../helpers/validateKey");
 
 const {
   GETVideogame,
+  GETVideogames,
   POSTVideogame,
+  GETUserComment,
+  GETCUserComments,
+  GETPUserComments,
+  PATCHHideComment,
   PUTVideogame,
   DELETEVideogame,
 } = require("../controllers/Videogame");
 
 const videogameRoutes = Router();
 
-videogameRoutes.get("/:id", validateKey, GETVideogame);
-videogameRoutes.post("/", validateKey, POSTVideogame);
-videogameRoutes.put("/:id", validateKey, PUTVideogame);
-videogameRoutes.delete("/:id", validateKey, DELETEVideogame);
+videogameRoutes.get("/:title/:realeseDate", validateKey, GETVideogame);
+videogameRoutes.get("/:limit/:page/:filter", validateKey, GETVideogames);
+videogameRoutes.get("/comment", validateKey, GETUserComment);
+videogameRoutes.get("/comments/critic", validateKey, GETCUserComments);
+videogameRoutes.get("/comments/public", validateKey, GETPUserComments);
+videogameRoutes.patch("/comment/hide", validateKey, PATCHHideComment);
+videogameRoutes.post("/add", validateKey, POSTVideogame);
+videogameRoutes.put("/change", validateKey, PUTVideogame);
+videogameRoutes.delete("/delete", validateKey, DELETEVideogame);
 
 module.exports = videogameRoutes;

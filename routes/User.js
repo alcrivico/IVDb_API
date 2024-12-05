@@ -8,15 +8,25 @@ const {
   POSTApplication,
   GETApplications,
   GETApplication,
+  PATCHApplication,
+  PATCHEvaluateApplication,
+  POSTComment,
 } = require("../controllers/User");
 
 const userRoutes = Router();
 
+userRoutes.get("/", validateKey, GETUser);
 userRoutes.post("/signup", POSTUser);
 userRoutes.post("/login", POSTLogin);
-userRoutes.get("/:id", validateKey, GETUser);
 userRoutes.post("/application", validateKey, POSTApplication);
 userRoutes.get("/applications", validateKey, GETApplications);
-userRoutes.get("/:id", validateKey, GETApplication);
+userRoutes.get("/application", validateKey, GETApplication);
+userRoutes.patch("/application", validateKey, PATCHApplication);
+userRoutes.patch(
+  "/application/evaluate",
+  validateKey,
+  PATCHEvaluateApplication
+);
+userRoutes.post("/comment", validateKey, POSTComment);
 
 module.exports = userRoutes;

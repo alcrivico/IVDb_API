@@ -153,7 +153,7 @@ const PATCHApplication = async (req, res = response) => {
   }
 };
 
-PATCHEvaluateApplication = async (req, res = response) => {
+const PATCHEvaluateApplication = async (req, res = response) => {
   const { email, status } = req.body;
 
   try {
@@ -181,6 +181,46 @@ PATCHEvaluateApplication = async (req, res = response) => {
   }
 };
 
+const POSTComment = async (req, res = response) => {
+  const { email, title, realeseDate, comment } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const videogame = await Videogame.findOne({
+      where: { title, realeseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const rating = await Rating.findOne({
+      where: { userId: user.id, videogameId: videogame.id },
+    });
+
+    if (!rating) {
+      return res
+        .status(404)
+        .json({ message: "No es posible comentar hasta calificar el juego" });
+    }
+
+    const newComment = new Comment({
+      content: comment,
+      createdAt: new Date(),
+      ratingId: rating.id,
+    });
+
+    await newComment.save();
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo comentar" });
+  }
+};
+
 module.exports = {
   GETUser,
   POSTUser,
@@ -188,4 +228,7 @@ module.exports = {
   POSTApplication,
   GETApplications,
   GETApplication,
+  PATCHApplication,
+  PATCHEvaluateApplication,
+  POSTComment,
 };

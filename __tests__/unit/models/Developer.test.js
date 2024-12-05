@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 
 const database_test = require("../../context/IVDatabase_test");
 
-const VideogameModel = require("../../../models/Videogame");
+const DeveloperModel = require("../../../models/Developer");
 
 beforeAll(async () => {
   await database_test.sync({ force: true });

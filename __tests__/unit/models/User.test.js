@@ -1,77 +1,227 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
+
+const database_test = require("../../context/IVDatabase_test");
 
 const UserModel = require("../../../models/User");
-const RoleModel = require("../../../models/Role");
-const ApplicationModel = require("../../../models/Application");
+const e = require("express");
 
-describe("User model", () => {
-  let sequelize;
-  let User;
-  let Role;
-  let Application;
+beforeAll(async () => {
+  await database_test.sync({ force: true });
+});
 
-  beforeAll(async () => {
-    sequelize = new Sequelize("sqlite::memory:", { logging: false });
+afterAll(async () => {
+  await database_test.close();
+});
 
-    Role = RoleModel(sequelize, DataTypes);
-    Application = ApplicationModel(sequelize, DataTypes);
-    User = UserModel(sequelize, DataTypes);
-
-    User.belongsTo(Role, { foreignKey: { name: "roleId", allowNull: false } });
-    Role.hasMany(User, { foreignKey: { name: "roleId", allowNull: false } });
-
-    User.hasOne(Application, {
-      foreignKey: { name: "userId", allowNull: false },
-    });
-    Application.belongsTo(User, {
-      foreignKey: { name: "userId", allowNull: false },
+describe("Crear User", () => {
+  test("Debe crear un usuario válido", async () => {
+    const user = await UserModel.create({
+      username: "Rodrigo",
+      email: "rodrigo@gmail.com",
+      password: "rodrigo",
     });
 
-    await sequelize.sync({ force: true });
+    expect(user).toBeTruthy();
   });
 
-  afterAll(async () => {
-    await sequelize.close();
+  test("No debe crear un usuario sin username", async () => {
+    await expect(
+      (user = await UserModel.create({
+        email: "daniel@gmail.com",
+        password: "daniel",
+      }))
+    ).rejects.toThrow();
   });
 
-  test("User model exists", () => {
-    expect(User).toBeDefined();
+  test("No debe crear un usuario sin email", async () => {
+    await expect(
+      (user = await UserModel.create({
+        username: "Daniel",
+        password: "daniel",
+      }))
+    ).rejects.toThrow();
   });
 
-  test("User has the expected attributes", async () => {
-    const user = await User.create({
-      username: "Test User",
-      email: "random@gmail.com",
-      password: "123456",
+  test("No debe crear un usuario sin password", async () => {
+    await expect(
+      (user = await UserModel.create({
+        username: "Daniel",
+        email: "daniel@gmail.com",
+      }))
+    ).rejects.toThrow();
+  });
+});
+
+describe("Buscar User", async () => {
+  test("Debe encontrar un usuario por email y password", async () => {
+    const user = await UserModel.findOne({
+      where: { email: "rodrigo@gmail.com", password: "rodrigo" },
     });
 
-    expect(user.username).toBe("Test User");
-    expect(user.email).toBe("random@gmail.com");
+    expect(user).toBeTruthy();
   });
 
-  test("User belongs to Role", async () => {
-    const role = await Role.create({ name: "Test Role" });
-    const user = await User.create({
-      username: "Test User",
-      email: "random2@gmail.com",
-      password: "123456",
-      roleId: role.id,
+  test("No debe encontrar un usuario por password incorrecto", async () => {
+    const user = await UserModel.findOne({
+      where: { email: "rodrigo@gmail.com", password: "daniel" },
     });
 
-    expect(user.roleId).toBe(role.id);
+    expect(user).toBeNull();
   });
 
-  test("User can be associated with an Application", async () => {
-    const user = await User.create({
-      username: "Test User",
-      email: "random3@gmail.com",
+  test("No debe encontrar un usuario por email incorrecto", async () => {
+    const user = await UserModel.findOne({
+      where: { email: "rodrigp@gmail.com", password: "rodrigo" },
     });
 
-    const application = await Application.create({
-      userId: user.id,
-      request: "Test Request",
+    expect(user).toBeNull();
+  });
+
+  test("No debe encontrar un usuario por email y password incorrectos", async () => {
+    const user = await UserModel.findOne({
+      where: { email: "rodrigp@gmail.com", password: "rodrigp" },
     });
 
-    expect(application.userId).toBe(user.id);
+    expect(user).toBeNull();
+  });
+});
+
+describe("Actualizar User", async () => {
+  test("Debe crear y actualizar el nombre de un usuario", async () => {
+    const user = await UserModel.create({
+      username: "Lucas",
+      email: "lucas@gmail.com",
+      password: "lucas",
+    });
+
+    expect(user).toBeTruthy();
+
+    user.username = "Lucas Gabriel";
+
+    await user.save();
+
+    const userUpdated = await UserModel.findOne({
+      where: {
+        username: "Lucas Gabriel",
+        email: "lucas@gmail.com",
+        password: "lucas",
+      },
+    });
+
+    expect(userUpdated).toBeTruthy();
+  });
+
+  test("Debe crear y actualizar el email de un usuario", async () => {
+    const user = await UserModel.create({
+      username: "Melina",
+      email: "melins@gmail.com",
+      password: "melina",
+    });
+
+    expect(user).toBeTruthy();
+
+    user.email = "melina@gmail.com";
+
+    await user.save();
+
+    const userUpdated = await UserModel.findOne({
+      where: {
+        username: "Melina",
+        email: "melina@gmail.com",
+        password: "melina",
+      },
+    });
+
+    expect(userUpdated).toBeTruthy();
+  });
+
+  test("Debe crear y actualizar la contraseña de un usuario", async () => {
+    const user = await UserModel.create({
+      username: "Wilfredo",
+      email: "wilfredo@gmail.com",
+      password: "wilfredl",
+    });
+
+    expect(user).toBeTruthy();
+
+    user.password = "wilfredo";
+
+    await user.save();
+
+    const userUpdated = await UserModel.findOne({
+      where: {
+        username: "Wilfredo",
+        email: "wilfredo@gmail.com",
+        password: "wilfredo",
+      },
+    });
+  });
+
+  test("No debe actualizar el correo de un usuario a uno ya existente", async () => {
+    const user = await UserModel.create({
+      username: "Carlos",
+      email: "carlos@gmail.com",
+      password: "carlos",
+    });
+
+    expect(user).toBeTruthy();
+
+    const user2 = await UserModel.create({
+      username: "Thomas",
+      email: "thomas@gmail.com",
+      password: "thomas",
+    });
+
+    expect(user2).toBeTruthy();
+
+    user2.email = "carlos@gmail.com";
+
+    await expect(user2.save()).rejects.toThrow();
+  });
+});
+
+describe("Eliminar User", async () => {
+  test("Debe eliminar un usuario existente", async () => {
+    const user = await UserModel.create({
+      username: "Javier",
+      email: "javier@gmail.com",
+      password: "javier",
+    });
+
+    expect(user).toBeTruthy();
+
+    await user.destroy();
+
+    const userDeleted = await UserModel.findOne({
+      where: {
+        username: "Javier",
+        email: "javier@gmail.com",
+      },
+    });
+
+    expect(userDeleted).toBeNull();
+  });
+
+  test("No debe eliminar un usuario inexistente", async () => {
+    const user = await UserModel.create({
+      username: "Gabriel",
+      email: "gabriel@gmail.com",
+      password: "gabriel",
+    });
+
+    expect(user).toBeTruthy();
+
+    await user.destroy();
+
+    const userDeleted = await UserModel.findOne({
+      where: {
+        username: "Gabriel",
+        email: "gabriel@gmail.com",
+      },
+    });
+
+    expect(userDeleted).toBeNull();
+
+    await expect(user.destroy()).rejects.toThrow();
   });
 });
