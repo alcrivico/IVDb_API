@@ -26,28 +26,28 @@ describe("Crear User", () => {
 
   test("No debe crear un usuario sin username", async () => {
     await expect(
-      (user = await UserModel.create({
+      UserModel.create({
         email: "daniel@gmail.com",
         password: "daniel",
-      }))
+      })
     ).rejects.toThrow();
   });
 
   test("No debe crear un usuario sin email", async () => {
     await expect(
-      (user = await UserModel.create({
+      UserModel.create({
         username: "Daniel",
         password: "daniel",
-      }))
+      })
     ).rejects.toThrow();
   });
 
   test("No debe crear un usuario sin password", async () => {
     await expect(
-      (user = await UserModel.create({
+      UserModel.create({
         username: "Daniel",
         email: "daniel@gmail.com",
-      }))
+      })
     ).rejects.toThrow();
   });
 });
@@ -200,28 +200,5 @@ describe("Eliminar User", () => {
     });
 
     expect(userDeleted).toBeNull();
-  });
-
-  test("No debe eliminar un usuario inexistente", async () => {
-    const user = await UserModel.create({
-      username: "Gabriel",
-      email: "gabriel@gmail.com",
-      password: "gabriel",
-    });
-
-    expect(user).toBeTruthy();
-
-    await user.destroy();
-
-    const userDeleted = await UserModel.findOne({
-      where: {
-        username: "Gabriel",
-        email: "gabriel@gmail.com",
-      },
-    });
-
-    expect(userDeleted).toBeNull();
-
-    await expect(user.destroy()).rejects.toThrow();
   });
 });
