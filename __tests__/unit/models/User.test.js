@@ -52,7 +52,7 @@ describe("Crear User", () => {
   });
 });
 
-describe("Buscar User", async () => {
+describe("Buscar User", () => {
   test("Debe encontrar un usuario por email y password", async () => {
     const user = await UserModel.findOne({
       where: { email: "rodrigo@gmail.com", password: "rodrigo" },
@@ -86,7 +86,7 @@ describe("Buscar User", async () => {
   });
 });
 
-describe("Actualizar User", async () => {
+describe("Actualizar User", () => {
   test("Debe crear y actualizar el nombre de un usuario", async () => {
     const user = await UserModel.create({
       username: "Lucas",
@@ -180,7 +180,7 @@ describe("Actualizar User", async () => {
   });
 });
 
-describe("Eliminar User", async () => {
+describe("Eliminar User", () => {
   test("Debe eliminar un usuario existente", async () => {
     const user = await UserModel.create({
       username: "Javier",
