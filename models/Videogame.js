@@ -13,7 +13,7 @@ const Videogame = database.define("videogame", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  realeseDate: {
+  releaseDate: {
     type: DataTypes.DATE,
     allowNull: false,
   },
