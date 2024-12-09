@@ -19,7 +19,6 @@ const User = database.define("user", {
   },
   profileRoute: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
 });
 
