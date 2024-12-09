@@ -28,7 +28,10 @@ const POSTUser = async (req, res = response) => {
       password,
       roleId: 2,
     });
-    res.status(201).json(newUser);
+
+    const userResponse = await User.findOne({ where: { email } });
+
+    res.status(201).json(userResponse);
   } catch (error) {
     res.status(400).json({ message: "No se pudo crear el usuario", error });
   }
@@ -87,7 +90,11 @@ const POSTApplication = async (req, res = response) => {
 
       await newApplication.save();
 
-      res.status(201).json(newApplication);
+      const applicationResponse = await Application.findOne({
+        where: { userId: user.id },
+      });
+
+      res.status(201).json(applicationResponse);
     }
   } catch (error) {
     res.status(500).json({ message: "No se pudo crear la solicitud", error });
@@ -271,7 +278,11 @@ const POSTComment = async (req, res = response) => {
 
     await newComment.save();
 
-    res.status(201).json({ message: "Comentario exitoso", newComment });
+    const commentResponse = await Comment.findOne({
+      where: { id: newComment.id },
+    });
+
+    res.status(201).json({ message: "Comentario exitoso", commentResponse });
   } catch (error) {
     res.status(500).json({ message: "No se pudo comentar", error });
   }

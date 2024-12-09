@@ -99,6 +99,11 @@ const GETUserComment = async (req, res = response) => {
             {
               model: User,
               where: { email },
+              include: [
+                {
+                  model: Role,
+                },
+              ],
             },
           ],
         },
@@ -146,7 +151,6 @@ const GETCUserComments = async (req, res = response) => {
               include: [
                 {
                   model: Role,
-                  where: { id: 3 },
                 },
               ],
             },
@@ -188,7 +192,6 @@ const GETPUserComments = async (req, res = response) => {
               include: [
                 {
                   model: Role,
-                  where: { id: 2 },
                 },
               ],
             },
@@ -234,12 +237,11 @@ const PATCHHideComment = async (req, res = response) => {
             {
               model: User,
               where: { email },
-            },
-          ],
-          include: [
-            {
-              model: Videogame,
-              where: { title, releaseDate },
+              include: [
+                {
+                  model: Role,
+                },
+              ],
             },
           ],
         },
@@ -310,7 +312,11 @@ const POSTVideogame = async (req, res = response) => {
       await newVideogame.addPlatforms(platformInstances);
     }
 
-    res.status(201).json(newVideogame);
+    const videogameResponse = await Videogame.findOne({
+      where: { title, releaseDate },
+    });
+
+    res.status(201).json(videogameResponse);
   } catch (error) {
     res.status(400).json({ message: "No se pudo crear el videojuego", error });
   }
