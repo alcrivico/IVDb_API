@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const database = require("../context/IVDatabase");
 
-const VideogameDetailView = database.define(
-  "videogameDetailView",
+const VideogameDetailedView = database.define(
+  "videogameDetailedView",
   {
     title: {
       type: DataTypes.STRING,
@@ -46,4 +46,4 @@ const VideogameDetailView = database.define(
   }
 );
 
-module.exports = VideogameDetailView;
+module.exports = VideogameDetailedView;
