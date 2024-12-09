@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Role = require("../models/Role");
 const Rating = require("../models/Rating");
 const Comment = require("../models/Comment");
+const VideogameDetailView = require("../models/views/VideogameDetailView");
 const { response } = require("express");
 const { where, Op } = require("sequelize");
 const e = require("express");
@@ -16,7 +17,7 @@ const GETVideogame = async (req, res = response) => {
   req.params.title = req.params.title.replace("-", " ");
 
   try {
-    const videogame = await Videogame.findOne({
+    const videogame = await VideogameDetailView.findOne({
       where: { title, releaseDate },
     });
 
@@ -56,7 +57,7 @@ const GETVideogames = async (req, res = response) => {
   }
 
   try {
-    const videogames = await Videogame.findAll({
+    const videogames = await VideogameDetailView.findAll({
       limit: limitNumber,
       offset: offsetNumber,
       order: order || [["title", "ASC"]],
