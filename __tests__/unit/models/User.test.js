@@ -10,7 +10,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await UserModel.destroy({ where: {} });
-
   await database_test.close();
 });
 
