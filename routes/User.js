@@ -10,6 +10,7 @@ const {
   GETApplication,
   PATCHApplication,
   PATCHEvaluateApplication,
+  POSTRating,
   POSTComment,
 } = require("../controllers/User");
 
@@ -27,6 +28,7 @@ userRoutes.patch(
   validateKey,
   PATCHEvaluateApplication
 );
+userRoutes.post("/rating", validateKey, POSTRating);
 userRoutes.post("/comment", validateKey, POSTComment);
 
 module.exports = userRoutes;

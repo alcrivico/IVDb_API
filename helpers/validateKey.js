@@ -2,11 +2,12 @@ const { request, response } = require("express");
 const jwt = require("jsonwebtoken");
 
 const { SECRET_KEY } = require("../helpers/config");
+console.log("SECRET_KEY: ", SECRET_KEY);
 
 const validateKey = (req = request, res = response, next) => {
   const token = req.header("x-token");
 
-  console.log(token);
+  console.log("GIVEN_KEY: ", token);
 
   if (!token) {
     return res.status(401).json({ mensaje: "No hay token en la petición" });

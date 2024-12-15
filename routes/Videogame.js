@@ -15,8 +15,8 @@ const {
 
 const videogameRoutes = Router();
 
-videogameRoutes.get("/:title/:realeseDate", validateKey, GETVideogame);
-videogameRoutes.get("/:limit/:page/:filter", validateKey, GETVideogames);
+videogameRoutes.get("/single/:title/:releaseDate", validateKey, GETVideogame);
+videogameRoutes.get("/group/:limit/:page/:filter", validateKey, GETVideogames);
 videogameRoutes.get("/comment", validateKey, GETUserComment);
 videogameRoutes.get("/comments/critic", validateKey, GETCUserComments);
 videogameRoutes.get("/comments/public", validateKey, GETPUserComments);

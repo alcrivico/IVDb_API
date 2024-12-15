@@ -2,15 +2,23 @@ const Videogame = require("../models/Videogame");
 const Developer = require("../models/Developer");
 const Genre = require("../models/Genre");
 const Platform = require("../models/Platform");
+const User = require("../models/User");
+const Role = require("../models/Role");
+const Rating = require("../models/Rating");
+const Comment = require("../models/Comment");
+const VideogameDetailedView = require("../models/views/VideogameDetailedView");
 const { response } = require("express");
 const { where, Op } = require("sequelize");
+const e = require("express");
 
 const GETVideogame = async (req, res = response) => {
-  const { title, realeseDate } = req.body;
+  const { title, releaseDate } = req.params;
+
+  req.params.title = req.params.title.replace("-", " ");
 
   try {
-    const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+    const videogame = await VideogameDetailedView.findOne({
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
@@ -24,7 +32,7 @@ const GETVideogame = async (req, res = response) => {
 };
 
 const GETVideogames = async (req, res = response) => {
-  const { filter, limit, page } = req.query;
+  const { filter, limit, page } = req.params;
   const limitNumber = parseInt(limit) || 8;
   const pageNumber = parseInt(page) || 1;
   const offsetNumber = (pageNumber - 1) * limitNumber;
@@ -38,10 +46,10 @@ const GETVideogames = async (req, res = response) => {
     case "Z-A":
       order = [["title", "DESC"]];
       break;
-    case "Mas Recientes":
+    case "MasRecientes":
       order = [["releaseDate", "DESC"]];
       break;
-    case "Mas Antiguos":
+    case "MasAntiguos":
       order = [["releaseDate", "ASC"]];
       break;
     default:
@@ -49,24 +57,26 @@ const GETVideogames = async (req, res = response) => {
   }
 
   try {
-    const videogames = await Videogame.findAll({
+    const videogames = await VideogameDetailedView.findAll({
       limit: limitNumber,
       offset: offsetNumber,
-      order: order,
+      order: order || [["title", "ASC"]],
     });
 
     res.status(200).json(videogames);
   } catch (error) {
-    res.status(500).json({ message: "No se pudo obtener los videojuegos" });
+    res
+      .status(500)
+      .json({ message: "No se pudo obtener los videojuegos", error });
   }
 };
 
 const GETUserComment = async (req, res = response) => {
-  const { title, realeseDate, email } = req.body;
+  const { title, releaseDate, email } = req.body;
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
@@ -90,12 +100,11 @@ const GETUserComment = async (req, res = response) => {
             {
               model: User,
               where: { email },
-            },
-          ],
-          include: [
-            {
-              model: Videogame,
-              where: { title, realeseDate },
+              include: [
+                {
+                  model: Role,
+                },
+              ],
             },
           ],
         },
@@ -108,17 +117,23 @@ const GETUserComment = async (req, res = response) => {
 
     res.status(200).json(comment);
   } catch (error) {
-    res.status(500).json({ message: "No se pudo obtener el comentario" });
+    res
+      .status(500)
+      .json({ message: "No se pudo obtener el comentario", error });
   }
 };
 
 const GETCUserComments = async (req, res = response) => {
-  const { title, realeseDate } = req.body;
+  const { title, releaseDate } = req.body;
+
+  console.log(title, releaseDate);
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
+
+    console.log(videogame.title);
 
     if (!videogame) {
       return res.status(404).json({ message: "Videojuego no encontrado" });
@@ -137,7 +152,6 @@ const GETCUserComments = async (req, res = response) => {
               include: [
                 {
                   model: Role,
-                  where: { id: 3 },
                 },
               ],
             },
@@ -148,16 +162,18 @@ const GETCUserComments = async (req, res = response) => {
 
     res.status(200).json(comments);
   } catch (error) {
-    res.status(500).json({ message: "No se pudieron obtener los comentarios" });
+    res
+      .status(500)
+      .json({ message: "No se pudieron obtener los comentarios", error });
   }
 };
 
 const GETPUserComments = async (req, res = response) => {
-  const { title, realeseDate } = req.body;
+  const { title, releaseDate } = req.body;
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
@@ -177,7 +193,6 @@ const GETPUserComments = async (req, res = response) => {
               include: [
                 {
                   model: Role,
-                  where: { id: 2 },
                 },
               ],
             },
@@ -188,16 +203,18 @@ const GETPUserComments = async (req, res = response) => {
 
     res.status(200).json(comments);
   } catch (error) {
-    res.status(500).json({ message: "No se pudieron obtener los comentarios" });
+    res
+      .status(500)
+      .json({ message: "No se pudieron obtener los comentarios", error });
   }
 };
 
 const PATCHHideComment = async (req, res = response) => {
-  const { value, title, realeseDate, email } = req.body;
+  const { value, title, releaseDate, email } = req.body;
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
@@ -221,12 +238,11 @@ const PATCHHideComment = async (req, res = response) => {
             {
               model: User,
               where: { email },
-            },
-          ],
-          include: [
-            {
-              model: Videogame,
-              where: { title, realeseDate },
+              include: [
+                {
+                  model: Role,
+                },
+              ],
             },
           ],
         },
@@ -242,7 +258,9 @@ const PATCHHideComment = async (req, res = response) => {
 
     res.status(200).json(comment);
   } catch (error) {
-    res.status(500).json({ message: "No se pudo ocultar el comentario" });
+    res
+      .status(500)
+      .json({ message: "No se pudo ocultar el comentario", error });
   }
 };
 
@@ -250,7 +268,7 @@ const POSTVideogame = async (req, res = response) => {
   const {
     title,
     description,
-    realeseDate,
+    releaseDate,
     imageRoute,
     developers,
     genres,
@@ -261,7 +279,7 @@ const POSTVideogame = async (req, res = response) => {
     const newVideogame = await Videogame.create({
       title,
       description,
-      realeseDate,
+      releaseDate,
       imageRoute,
     });
 
@@ -295,18 +313,23 @@ const POSTVideogame = async (req, res = response) => {
       await newVideogame.addPlatforms(platformInstances);
     }
 
-    res.status(201).json(newVideogame);
+    const videogameResponse = await Videogame.findOne({
+      where: { title, releaseDate },
+    });
+
+    res.status(201).json(videogameResponse);
   } catch (error) {
-    res.status(400).json({ message: "No se pudo crear el videojuego" });
+    res.status(400).json({ message: "No se pudo crear el videojuego", error });
   }
 };
 
 const PUTVideogame = async (req, res = response) => {
   const {
     title,
-    realeseDate,
+    releaseDate,
     newTitle,
-    newRealeseDate,
+    newDescription,
+    newReleaseDate,
     newImageRoute,
     newDevelopers,
     newGenres,
@@ -315,7 +338,7 @@ const PUTVideogame = async (req, res = response) => {
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
@@ -325,10 +348,11 @@ const PUTVideogame = async (req, res = response) => {
     await Videogame.update(
       {
         title: newTitle,
-        realeseDate: newRealeseDate,
+        description: newDescription,
+        releaseDate: newReleaseDate,
         imageRoute: newImageRoute,
       },
-      { where: { title, realeseDate } }
+      { where: { title, releaseDate } }
     );
 
     if (newDevelopers && newDevelopers.length > 0) {
@@ -361,29 +385,33 @@ const PUTVideogame = async (req, res = response) => {
       await videogame.setPlatforms(platformInstances);
     }
 
-    res.status(200).json({ message: "Videojuego actualizado" });
+    res.status(200).json({ message: "Videojuego actualizado", videogame });
   } catch (error) {
-    res.status(500).json({ message: "No se pudo actualizar el videojuego" });
+    res
+      .status(500)
+      .json({ message: "No se pudo actualizar el videojuego", error });
   }
 };
 
 const DELETEVideogame = async (req, res = response) => {
-  const { title, realeseDate } = req.body;
+  const { title, releaseDate } = req.body;
 
   try {
     const videogame = await Videogame.findOne({
-      where: { title, realeseDate },
+      where: { title, releaseDate },
     });
 
     if (!videogame) {
       return res.status(404).json({ message: "Videojuego no encontrado" });
     }
 
-    await Videogame.destroy({ where: { title, realeseDate } });
+    await Videogame.destroy({ where: { title, releaseDate } });
 
     res.status(200).json({ message: "Videojuego eliminado" });
   } catch (error) {
-    res.status(500).json({ message: "No se pudo eliminar el videojuego" });
+    res
+      .status(500)
+      .json({ message: "No se pudo eliminar el videojuego", error });
   }
 };
 
