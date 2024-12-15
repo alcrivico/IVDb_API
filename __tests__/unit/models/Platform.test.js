@@ -9,5 +9,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await PlatformModel.destroy({ where: {} });
   await database_test.close();
 });

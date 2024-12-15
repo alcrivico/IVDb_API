@@ -9,5 +9,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await DeveloperModel.destroy({ where: {} });
   await database_test.close();
 });
