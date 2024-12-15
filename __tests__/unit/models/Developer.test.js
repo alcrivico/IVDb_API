@@ -1,14 +1,23 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Transaction } = require("sequelize");
 
 const database_test = require("../../models/context/IVDatabase_test");
 
 const DeveloperModel = require("../../models/Developer");
 
+let transaction;
+
 beforeAll(async () => {
   await database_test.sync({ force: false });
 });
 
+beforeEach(async () => {
+  transaction = await database_test.transaction();
+});
+
+afterEach(async () => {
+  await transaction.rollback();
+});
+
 afterAll(async () => {
-  await DeveloperModel.destroy({ where: {} });
   await database_test.close();
 });
