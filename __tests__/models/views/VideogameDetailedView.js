@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const database = require("../context/IVDatabase");
+const database = require("../context/IVDatabase_test");
 
 const VideogameDetailedView = database.define(
   "videogameDetailedView",

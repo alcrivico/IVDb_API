@@ -5,7 +5,7 @@ const database_test = require("../../models/context/IVDatabase_test");
 const ApplicationModel = require("../../models/Application");
 
 beforeAll(async () => {
-  await database_test.sync({ force: true });
+  await database_test.sync({ force: false });
 });
 
 afterAll(async () => {
