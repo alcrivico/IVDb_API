@@ -1,7 +1,5 @@
 const { DataTypes } = require("sequelize");
 const database = require("./context/IVDatabase");
-const User = require("./User");
-const Videogame = require("./Videogame");
 const Rating = require("./Rating");
 
 const Comment = database.define("comment", {

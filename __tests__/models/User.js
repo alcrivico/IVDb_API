@@ -17,6 +17,9 @@ const User = database.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  profileRoute: {
+    type: DataTypes.STRING,
+  },
 });
 
 User.belongsTo(Role, { foreignKey: { name: "roleId", allowNull: true } });
