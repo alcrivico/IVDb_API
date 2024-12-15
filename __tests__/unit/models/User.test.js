@@ -3,7 +3,6 @@ const { DataTypes } = require("sequelize");
 const database_test = require("../../models/context/IVDatabase_test");
 
 const UserModel = require("../../models/User");
-const e = require("express");
 
 beforeAll(async () => {
   await database_test.sync({ force: true });

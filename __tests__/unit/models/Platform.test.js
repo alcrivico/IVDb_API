@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 
-const database_test = require("../../context/IVDatabase_test");
+const database_test = require("../../models/context/IVDatabase_test");
 
-const PlatformModel = require("../../../models/Platform");
+const PlatformModel = require("../../models/Platform");
 
 beforeAll(async () => {
   await database_test.sync({ force: true });
