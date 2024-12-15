@@ -328,6 +328,7 @@ const PUTVideogame = async (req, res = response) => {
     title,
     releaseDate,
     newTitle,
+    newDescription,
     newReleaseDate,
     newImageRoute,
     newDevelopers,
@@ -347,6 +348,7 @@ const PUTVideogame = async (req, res = response) => {
     await Videogame.update(
       {
         title: newTitle,
+        description: newDescription,
         releaseDate: newReleaseDate,
         imageRoute: newImageRoute,
       },
