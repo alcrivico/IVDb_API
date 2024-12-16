@@ -22,14 +22,6 @@ beforeAll(async () => {
   token = userToken.header["x-token"];
 });
 
-beforeEach(async () => {
-  transaction = await database_test.transaction();
-});
-
-afterEach(async () => {
-  await transaction.rollback();
-});
-
 const clearDumbData = async () => {
   await ApplicationModel.destroy({
     where: {

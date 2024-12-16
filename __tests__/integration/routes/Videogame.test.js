@@ -13,8 +13,6 @@ const RatingModel = require("../../models/Rating");
 const CommentModel = require("../../models/Comment");
 const VideogameDetailedViewModel = require("../../models/views/VideogameDetailedView");
 
-let transaction;
-
 beforeAll(async () => {
   await database_test.sync({ force: false });
 
@@ -26,6 +24,9 @@ beforeAll(async () => {
   token = userToken.header["x-token"];
 });
 
+const clearDumbData = async () => {};
+
 afterAll(async () => {
+  await clearDumbData();
   await database_test.close();
 });
