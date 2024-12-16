@@ -14,11 +14,11 @@ const e = require("express");
 const GETVideogame = async (req, res = response) => {
   const { title, releaseDate } = req.params;
 
-  req.params.title = req.params.title.replace("-", " ");
-
   try {
+    releaseDateFormat = new Date(releaseDate);
+
     const videogame = await VideogameDetailedView.findOne({
-      where: { title, releaseDate },
+      where: { title, releaseDate: releaseDateFormat },
     });
 
     if (!videogame) {

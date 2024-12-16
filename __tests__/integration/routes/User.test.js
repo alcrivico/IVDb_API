@@ -1,8 +1,7 @@
 const request = require("supertest");
 const { Op } = require("sequelize");
 const database_test = require("../../models/context/IVDatabase_test");
-const Server = require("../../server");
-const server = new Server().app;
+const { server, server2 } = require("../../server_test");
 
 const UserModel = require("../../models/User");
 const RatingModel = require("../../models/Rating");

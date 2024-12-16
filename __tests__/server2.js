@@ -1,14 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const database = require("./models/context/IVDatabase_test");
 const userRoutes = require("./routes/User");
 const videogameRoutes = require("./routes/Videogame");
 
-class Server {
+class Server2 {
   constructor() {
     this.app = express();
-    this.port = 8083;
+    this.port = 8084;
     this.middlewares();
     this.routes();
   }
@@ -25,7 +24,7 @@ class Server {
   }
 
   listen() {
-    this.app.listen(8083, () => {
+    this.app.listen(8084, () => {
       console.log(`Server listening on port ${this.port}`);
     });
   }
@@ -42,4 +41,4 @@ database
     console.log("Error al conectar a la base de datos: ", error);
   });
 
-module.exports = Server;
+module.exports = Server2;
