@@ -3,7 +3,7 @@ const Rating = require("../models/Rating");
 const Application = require("../models/Application");
 const Comment = require("../models/Comment");
 const Videogame = require("../models/Videogame");
-const { generateKey } = require("../helpers/generateKey");
+const { generateKey } = require("../../helpers/generateKey");
 const { response } = require("express");
 
 const GETUser = async (req, res = response) => {
