@@ -4,11 +4,6 @@ const { server, server2 } = require("../../server_test");
 
 const VideogameModel = require("../../models/Videogame");
 const DeveloperModel = require("../../models/Developer");
-const GenreModel = require("../../models/Genre");
-const PlatformModel = require("../../models/Platform");
-const UserModel = require("../../models/User");
-const RoleModel = require("../../models/Role");
-const RatingModel = require("../../models/Rating");
 const CommentModel = require("../../models/Comment");
 const VideogameDetailedViewModel = require("../../models/views/VideogameDetailedView");
 const e = require("express");
