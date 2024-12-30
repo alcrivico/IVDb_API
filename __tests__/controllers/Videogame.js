@@ -133,8 +133,6 @@ const GETCUserComments = async (req, res = response) => {
       where: { title, releaseDate },
     });
 
-    console.log(videogame.title);
-
     if (!videogame) {
       return res.status(404).json({ message: "Videojuego no encontrado" });
     }
@@ -385,7 +383,13 @@ const PUTVideogame = async (req, res = response) => {
       await videogame.setPlatforms(platformInstances);
     }
 
-    res.status(200).json({ message: "Videojuego actualizado", videogame });
+    const videogameUpdated = await Videogame.findOne({
+      where: { title: newTitle, releaseDate: newReleaseDate },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Videojuego actualizado", videogameUpdated });
   } catch (error) {
     res
       .status(500)
