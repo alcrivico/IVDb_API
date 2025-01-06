@@ -193,6 +193,9 @@ const PATCHEvaluateApplication = async (req, res = response) => {
     if (application.state) {
       user.roleId = 3;
       await user.save();
+    } else {
+      user.roleId = 2;
+      await user.save();
     }
 
     res.status(200).json(application);
