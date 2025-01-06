@@ -6,6 +6,7 @@ const { server, server2 } = require("../../server_test");
 const UserModel = require("../../models/User");
 const RatingModel = require("../../models/Rating");
 const ApplicationModel = require("../../models/Application");
+const ApplicationDetailedViewModel = require("../../models/views/ApplicationDetailedView");
 const CommentModel = require("../../models/Comment");
 const VideogameModel = require("../../models/Videogame");
 const Rating = require("../../models/Rating");
@@ -317,9 +318,11 @@ describe("GET /api/user/applications", () => {
   });
 
   test("Debe retornar 500 si hay un error en el servidor", async () => {
-    jest.spyOn(ApplicationModel, "findAll").mockImplementation(() => {
-      throw new Error("Error en el servidor");
-    });
+    jest
+      .spyOn(ApplicationDetailedViewModel, "findAll")
+      .mockImplementation(() => {
+        throw new Error("Error en el servidor");
+      });
 
     const response = await request(server)
       .get("/api/user/applications")
@@ -330,7 +333,7 @@ describe("GET /api/user/applications", () => {
       "No se pudieron obtener las solicitudes"
     );
 
-    ApplicationModel.findAll.mockRestore();
+    ApplicationDetailedViewModel.findAll.mockRestore();
   });
 });
 

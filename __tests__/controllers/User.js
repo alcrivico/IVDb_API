@@ -5,6 +5,7 @@ const Comment = require("../models/Comment");
 const Videogame = require("../models/Videogame");
 const { generateKey } = require("../../helpers/generateKey");
 const { response } = require("express");
+const ApplicationDetailedView = require("../models/views/ApplicationDetailedView");
 
 const GETUser = async (req, res = response) => {
   const { email, password } = req.body;
@@ -103,7 +104,7 @@ const POSTApplication = async (req, res = response) => {
 
 const GETApplications = async (req, res = response) => {
   try {
-    const applications = await Application.findAll();
+    const applications = await ApplicationDetailedView.findAll();
 
     res.status(200).json(applications);
   } catch (error) {
