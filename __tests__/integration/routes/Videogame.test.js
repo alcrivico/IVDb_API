@@ -159,6 +159,64 @@ describe("GET /api/videogame/group/:limit/:page/:filter", () => {
   });
 });
 
+describe("GET /api/videogame/rating", () => {
+  test("Debe obtener la calificación de un videojuego de un usuario", async () => {
+    const response = await request(server2)
+      .get("/api/videogame/rating")
+      .set("x-token", token)
+      .send({
+        title: "Fortnite",
+        releaseDate: new Date("2017-07-25"),
+        email: "diego@gmail.com",
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.rate).toBe(60);
+  });
+
+  test("Debe regresar un error 404 al buscar la calificación de un videojuego inexistente", async () => {
+    const response = await request(server2)
+      .get("/api/videogame/rating")
+      .set("x-token", token)
+      .send({
+        title: "Grand Theft Auto VI",
+        releaseDate: new Date("2025-09-17"),
+        email: "diego@gmail.com",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Videojuego no encontrado");
+  });
+
+  test("Debe regresar un error 404 al buscar la calificación de un videojuego de un usuario inexistente", async () => {
+    const response = await request(server2)
+      .get("/api/videogame/rating")
+      .set("x-token", token)
+      .send({
+        title: "Fortnite",
+        releaseDate: new Date("2017-07-25"),
+        email: "usuario@ejemplo.com",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Usuario no encontrado");
+  });
+
+  test("Debe regresar un error 404 al buscar la calificación de un videojuego de un usuario que no ha calificado", async () => {
+    const response = await request(server2)
+      .get("/api/videogame/rating")
+      .set("x-token", token)
+      .send({
+        title: "Fortnite",
+        releaseDate: new Date("2017-07-25"),
+        email: "victoria@gmail.com",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Calificación no encontrada");
+  });
+});
+
 describe("GET /api/videogame/comment", () => {
   test("Debe obtener el comentario de un videojuego de un usuario", async () => {
     const response = await request(server2)

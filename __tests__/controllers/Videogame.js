@@ -71,6 +71,40 @@ const GETVideogames = async (req, res = response) => {
   }
 };
 
+const GETUserRating = async (req, res = response) => {
+  const { title, releaseDate, email } = req.body;
+
+  try {
+    const videogame = await Videogame.findOne({
+      where: { title, releaseDate },
+    });
+
+    if (!videogame) {
+      return res.status(404).json({ message: "Videojuego no encontrado" });
+    }
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const rating = await Rating.findOne({
+      where: {
+        [Op.and]: [{ videogameId: videogame.id }, { userId: user.id }],
+      },
+    });
+
+    if (!rating) {
+      return res.status(404).json({ message: "Calificación no encontrada" });
+    }
+
+    res.status(200).json(rating);
+  } catch (error) {
+    res.status(500).json({ message: "No se pudo obtener el rating", error });
+  }
+};
+
 const GETUserComment = async (req, res = response) => {
   const { title, releaseDate, email } = req.body;
 
@@ -422,6 +456,7 @@ const DELETEVideogame = async (req, res = response) => {
 module.exports = {
   GETVideogame,
   GETVideogames,
+  GETUserRating,
   GETUserComment,
   GETCUserComments,
   GETPUserComments,

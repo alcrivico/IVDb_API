@@ -5,6 +5,7 @@ const {
   GETVideogame,
   GETVideogames,
   POSTVideogame,
+  GETUserRating,
   GETUserComment,
   GETCUserComments,
   GETPUserComments,
@@ -17,6 +18,7 @@ const videogameRoutes = Router();
 
 videogameRoutes.get("/single/:title/:releaseDate", validateKey, GETVideogame);
 videogameRoutes.get("/group/:limit/:page/:filter", validateKey, GETVideogames);
+videogameRoutes.get("/rating", validateKey, GETUserRating);
 videogameRoutes.get("/comment", validateKey, GETUserComment);
 videogameRoutes.get("/comments/critic", validateKey, GETCUserComments);
 videogameRoutes.get("/comments/public", validateKey, GETPUserComments);
